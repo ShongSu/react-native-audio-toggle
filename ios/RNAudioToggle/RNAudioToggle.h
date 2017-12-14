@@ -6,8 +6,7 @@
 //  Copyright © 2017 Aetonix. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
-@interface RNAudioToggle : NSObject
+#import <React/RCTBridgeModule.h>
+@interface RNAudioToggle : NSObject <RCTBridgeModule>
 
 @end
