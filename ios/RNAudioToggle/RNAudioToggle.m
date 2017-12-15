@@ -16,23 +16,38 @@
 RCT_EXPORT_MODULE()
 
 - (NSDictionary *)constantsToExport {
-    return @{@"greeting": @"Test AudioToggle Component!"};
+    NSString *category = [[AVAudioSession sharedInstance] category];
+    return @{
+             @"module": @"AudioToggle",
+             @"category": category,
+             };
 }
 
 RCT_EXPORT_METHOD(setAudioMode:(NSString *)mode) {
-    
-    NSError* __autoreleasing err = nil;
-    UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_None;
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    if ([mode isEqualToString:@"earpiece"]) {
-        [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&err];
-        audioRouteOverride = kAudioSessionProperty_OverrideCategoryDefaultToSpeaker;
-        AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(audioRouteOverride), &audioRouteOverride);
-    } else if ([mode isEqualToString:@"speaker"] || [mode isEqualToString:@"ringtone"]) {
-        [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker error:&err];
-    } else if ([mode isEqualToString:@"normal"]) {
-        [session setCategory:AVAudioSessionCategorySoloAmbient error:&err];
+
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+
+    if (mode != nil) {
+        if ([mode isEqualToString:@"speaker"]) {
+            [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+            [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+        } else if ([mode isEqualToString:@"earpiece"]){
+            [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+            [session overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+        } else {
+            [session setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+        }
+
     }
+}
+
+RCT_EXPORT_METHOD(reset) {
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategorySoloAmbient error:nil];
+}
+
+RCT_EXPORT_METHOD(getCategory:(RCTResponseSenderBlock)callback) {
+    NSString *category = [[AVAudioSession sharedInstance] category];
+    callback(@[category, @(true)]);
 }
 
 @end
