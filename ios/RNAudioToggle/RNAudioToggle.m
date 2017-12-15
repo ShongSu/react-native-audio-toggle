@@ -2,7 +2,7 @@
 //  RNAudioToggle.m
 //  RNAudioToggle
 //
-//  Created by Michel Paquet on 2017-12-14.
+//  Created by ShongSu on 2017-12-14.    - -!
 //  Copyright © 2017 Facebook. All rights reserved.
 //
 
